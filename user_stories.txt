@@ -1,0 +1,167 @@
+[X] As a user, I can list all the meals
+[X] As a user, I can add a new meal
+[ ] As a user, I can add a new customer
+[ ] As a user, I can list all the customers
+
+Flow:
+
+1. Model
+2. Repository
+2.5 Router/app.rb
+3. Controller/View
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+csv_file = File.join(__dir__, "data/meals.csv")
+
+class Router
+ def initialize(meals_controller)
+    @meals_controller = meals_controller
+    @running = true
+  end
+
+  def run
+    while @running
+      choice = display_menu
+      print `clear`
+      action(choice)
+    end
+  end
+
+  private
+
+  def display_menu
+    puts "------------------------------"
+    puts "------------ MENU ------------"
+    puts "------------------------------"
+    puts "What do you want to do"
+    puts "1 - List all meals"
+    puts "9 - Quit"
+    print "> "
+    gets.chomp.to_i
+  end
+
+  def action(choice)
+    case choice
+    when 1 then @meals_controller.list
+    when 9 then @running = false
+    else
+      puts "Try again..."
+    end
+  end
+end
+
+
+
+class Router
+  def initialize(meals_controller, customers_controller)
+    @meals_controller = meals_controller
+    @customers_controller = customers_controller
+    @running = true
+  end
+ 
+  def run
+    while @running
+      choice = display_menu
+      print `clear`
+      action(choice)
+    end
+  end
+
+  private
+
+  def display_menu
+    puts "------------------------------"
+    puts "------------ MENU ------------"
+    puts "------------------------------"
+    puts "What do you want to do"
+    puts "1 - List all meals"
+    puts "2 - Add a meal"
+    puts "3 - List all customers"
+    puts "4 - Add a customer"
+    puts "9 - Quit"
+    print "> "
+    gets.chomp.to_i
+  end
+
+  def action(choice)
+    case choice
+    when 1 then @meals_controller.list
+
+   
+    when 9 then @running = false
+    else
+      puts "Try again..."
+    end
+  end
+end
+
+
+app.rb
+
+
+require_relative "app/models/meal"
+require_relative "app/models/customer"
+require_relative 'router'
+require_relative 'app/repositories/meal_repository'
+require_relative 'app/controllers/meals_controller'
+require_relative 'app/repositories/customer_repository'
+require_relative 'app/controllers/customers_controller'
+
+
+# burger = Meal.new(name: "Burger", price: 1000)
+
+meal_csv_file = File.join(__dir__, "data/meals.csv")
+meal_repository = MealRepository.new(meal_csv_file)
+meals_controller = MealsController.new(meal_repository)
+customer_csv_file = File.join(__dir__, "data/customers.csv")
+customer_repository = CustomerRepository.new(customer_csv_file)
+customers_controller = CustomersController.new(customer_repository)
+
+router = Router.new(meals_controller, customers_controller)
+
+router.run
+
+# meal_repository.create(burger)
+# p meal_repository
